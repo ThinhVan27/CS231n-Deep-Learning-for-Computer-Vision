@@ -59,7 +59,7 @@ def calc_histogram(gradient_direction, gradient_magnitude):
             for k in range(8):
                 for l in range(8):
                     first_bin = int(cell_dir[k, l] / 20)
-                    if first_bin * 20 == cell_dir[k, l]:
+                    if float(first_bin * 20) == cell_dir[k, l]:
                         hist_cell[first_bin] += cell_mag[k, l]
                     else:
                         hist_cell[first_bin] += (20 * first_bin + 20 - cell_dir[k, l]) * cell_mag[k, l] / 20
