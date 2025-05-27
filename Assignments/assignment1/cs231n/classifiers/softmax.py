@@ -38,8 +38,9 @@ def softmax_loss_naive(W, X, y, reg):
 
     N, C = X.shape[0], W.shape[-1]
     for i in range(N):
-      t = np.exp(scores)
-      prob = t[i] / np.sum(t[i])
+      shifted_s = scores - np.max(scores, keepdims=True) # shift to avoid numeric instability in exp()
+      e = np.exp(shifted_s)
+      prob = e[i] / np.sum(e[i])
       loss += -np.log(prob[y[i]] + 1e-6)
       prob[y[i]] -= 1
       dW += np.outer(X[i], prob)
@@ -74,7 +75,9 @@ def softmax_loss_vectorized(W, X, y, reg):
     
     N, C = X.shape[0], W.shape[-1] 
     scores = X.dot(W)
-    probs = np.exp(scores) / np.sum(np.exp(scores), axis=1).reshape(-1, 1)
+    shifted_s = scores - np.max(scores, axis=1, keepdims=True) # shift to avoid numerical instability in exp()
+    e = np.exp(shifted_s)
+    probs = e / np.sum(e, axis=1).reshape(-1, 1)
     loss += np.sum(-np.log(probs[range(N), y] + 1e-6)) / N + reg * np.sum(W ** 2)
     probs[range(N), y] -= 1
     dW += np.transpose(X) @ probs / N + 2 * reg * W

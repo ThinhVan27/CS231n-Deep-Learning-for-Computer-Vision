@@ -823,8 +823,9 @@ def softmax_loss(x, y):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     N, C = x.shape
-
-    probs = np.exp(x) / np.sum(np.exp(x), axis=1).reshape(-1, 1)
+    shifted_x = x - np.max(x, axis=1, keepdims=True) # shift to avoid numeric instability to exp()
+    e = np.exp(shifted_x)
+    probs = e / np.sum(e, axis=1).reshape(-1, 1)
     loss = np.sum(-np.log(probs[range(N), y])) / N
     dx = probs.copy()
     dx[range(N), y] -= 1
